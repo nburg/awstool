@@ -1,0 +1,35 @@
+#cloud-config
+
+bootcmd:
+  - echo <%= options['hostname'] %> > /etc/hostname
+  - hostname -F /etc/hostname
+
+hostname: <%= options['hostname'] %>
+fqdn: <%= options['hostname'] %>
+manage_etc_hosts: true
+
+package_upgrade: true
+package_reboot_if_required: true
+
+write_files:
+<% if options['csr_attributes'] %>
+  - content: |
+      ---
+      custom_attributes:
+        1.2.840.113549.1.9.7: <%= options['csr_attributes'] %>
+    path: /etc/puppetlab/puppet/csr_attributes.yaml
+    permissions: 0600
+<% end %>
+<% options['facts'].each do |fact, value| %>
+  - content: |
+      ---
+      <%= fact %>: <%= value %>
+    path: /opt/puppetlabs/facter/facts.d/<%= fact %>.yaml
+    permissions: '0644'
+<% end %>
+      
+<%# runcmd: %>
+<%#   - rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm %>
+<%#   - yum -y install puppet-agent %>
+<%#   - puppet agent -t --waitforcert 5  --server henson.uchicago.edu %>
+<%#   - puppet agent -t %>

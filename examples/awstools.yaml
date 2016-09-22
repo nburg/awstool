@@ -1,0 +1,17 @@
+key-name: mykey
+image-id: ami-foobar
+subnet-id: subnet-foobar
+security-group-ids:
+- sg-foobar
+- sg-foobaz
+iam-instance-profile: myprofile
+access_key_id: ABRACADABRA
+access_key: somelongstring
+region: us-east-1
+instance-type: t2.medium
+facts:
+  foo: bar
+csr_attributes: anotherlongstring
+dns_zone:
+  zone-id: FAKEID
+  email: admin@example.com
