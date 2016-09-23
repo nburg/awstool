@@ -17,7 +17,7 @@ class Awstools::Settings
 
   def self.get_flags
     OptionParser.new do |opts|
-      opts.banner = 'Usage: uc [options] ucenv ucservice'
+      opts.banner = 'Usage: awstools [options] hostname'
 
       opts.on('-h', '--help', 'Prints this help') do
         puts opts
