@@ -5,7 +5,7 @@ require 'awstool/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "awstool"
-  spec.version       = Awstools::VERSION
+  spec.version       = Awstool::VERSION
   spec.authors       = ["Nick Burgess"]
   spec.email         = ["nburgess@uchicago.edu"]
 
