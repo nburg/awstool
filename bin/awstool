@@ -5,6 +5,7 @@ require 'pp'
 require 'fog'
 
 options = Awstool::Settings.get_options
+pp options
 
 instance = Awstool::Instance.new(options)
 instance.launch

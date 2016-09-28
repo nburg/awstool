@@ -10,6 +10,7 @@ class Awstool::Settings
     set_default
     get_rc
     get_flags
+    @options.merge!(@options_file) if @options_file
     @options
   end
 
@@ -41,6 +42,14 @@ class Awstool::Settings
       opts.on('--debug', 'Prints some extra output helpful for debugging') do
         @options['debug'] = true
       end
+
+      opts.on(
+        '-o',
+        '--options-file FILE',
+        'Use an option file that will merge and override settings in .awstool.yaml.' ) do |options_file|
+        @options_file = Psych.load_file(File.expand_path(options_file))
+      end
+
     end.parse!
 
     [ 'hostname' ].each do |v|
