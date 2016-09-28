@@ -2,7 +2,6 @@
 
 require 'awstool'
 require 'pp'
-require 'fog'
 
 options = Awstool::Settings.get_options
 pp options

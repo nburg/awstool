@@ -1,4 +1,5 @@
 require 'erb'
+require 'fog'
 
 class Awstool::Instance
   def initialize(options)
@@ -33,6 +34,11 @@ class Awstool::Instance
     )
 
     zone = dns.zones.get(@options['dns-zone-id'])
+
+    if @options['purge_dns']
+      record = zone.records.find { |r| r.name == @options['hostname'] }
+      record.destroy
+    end
 
     @record = zone.records.create(
       value: @instance.private_ip_address,
