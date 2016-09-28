@@ -12,11 +12,11 @@ package_upgrade: true
 package_reboot_if_required: true
 
 write_files:
-<% if options['csr_attributes'] %>
+<% if options['puppet_repo']['csr_attributes'] %>
   - content: |
       ---
       custom_attributes:
-        1.2.840.113549.1.9.7: <%= options['csr_attributes'] %>
+        1.2.840.113549.1.9.7: <%= options['puppet_repo']['csr_attributes'] %>
     path: /etc/puppetlab/puppet/csr_attributes.yaml
     permissions: 0600
 <% end %>
@@ -28,8 +28,16 @@ write_files:
     permissions: '0644'
 <% end %>
       
-<%# runcmd: %>
-<%#   - rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm %>
-<%#   - yum -y install puppet-agent %>
-<%#   - puppet agent -t --waitforcert 5  --server henson.uchicago.edu %>
-<%#   - puppet agent -t %>
+<% if options['puppet_repo'] %>
+runcmd:
+  <% if options['puppet_repo']['package_manager'] == 'apt-get' %>
+  - wget https://apt.puppetlabs.com/<%= options['puppet_repo']['repo_package'] %>
+  - dpkg -i <%= options['puppet_repo']['repo_package'] %>
+  <% elsif options['puppet_repo']['package_manager'] == 'yum' %>
+  - rpm -ivh https://yum.puppetlabs.com/<%= options['puppet_repo']['repo_package'] %>
+  - yum -y install puppet-agent
+  <% end %>
+  - /opt/puppetlabs/bin/puppet agent -t --waitforcert 5  --server <%= options['puppet_server'] %>
+  - /opt/puppetlabs/bin/puppet agent -t
+<% else %>
+<% end %>

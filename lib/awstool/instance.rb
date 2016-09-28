@@ -36,8 +36,10 @@ class Awstool::Instance
     zone = dns.zones.get(@options['dns-zone-id'])
 
     if @options['purge_dns']
-      record = zone.records.find { |r| r.name == @options['hostname'] }
-      record.destroy
+      record = zone.records.find { |r| r.name == "#{@options['hostname']}." }
+      if record
+        record.destroy
+      end
     end
 
     @record = zone.records.create(
