@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'awstools/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "awstools"
+  spec.name          = "awstoolss"
   spec.version       = Awstools::VERSION
   spec.authors       = ["Nick Burgess"]
   spec.email         = ["nburgess@uchicago.edu"]
