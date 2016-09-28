@@ -3,6 +3,7 @@ require 'psych'
 
 class Awstool::Settings
   @options = {}
+  @option_files = []
 
   attr_reader :options
 
@@ -10,7 +11,9 @@ class Awstool::Settings
     set_default
     get_rc
     get_flags
-    @options.merge!(@options_file) if @options_file
+    @option_files.each do |f|
+      @options.merge!(f)
+    end
     @options
   end
 
@@ -45,9 +48,12 @@ class Awstool::Settings
 
       opts.on(
         '-o',
-        '--options-file FILE',
-        'Use an option file that will merge and override settings in .awstool.yaml.' ) do |options_file|
-        @options_file = Psych.load_file(File.expand_path(options_file))
+        '--options-file FILE1,FILE2',
+        Array,
+        'List option files that will merge and override settings in .awstool.yaml. Last entry takes precedence.' ) do |of|
+        of.each do |f|
+          @option_files << Psych.load_file(File.expand_path(f))
+        end
       end
 
     end.parse!
