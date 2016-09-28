@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'awstool'
+require 'pp'
+require 'fog'
+
+options = Awstool::Settings.get_options
+
+instance = Awstool::Instance.new(options)
+instance.launch
+instance.set_dns

@@ -1,7 +1,7 @@
 require 'optparse'
 require 'psych'
 
-class Awstools::Settings
+class Awstool::Settings
   @options = {}
 
   attr_reader :options
@@ -17,7 +17,7 @@ class Awstools::Settings
 
   def self.get_flags
     OptionParser.new do |opts|
-      opts.banner = 'Usage: awstools [options] hostname'
+      opts.banner = 'Usage: awstool [options] hostname'
 
       opts.on('-h', '--help', 'Prints this help') do
         puts opts
@@ -55,7 +55,7 @@ class Awstools::Settings
   end
 
   def self.get_rc
-    awsconf = "#{ENV['HOME']}/.awstools.yaml"
+    awsconf = "#{ENV['HOME']}/.awstool.yaml"
     if File.exist?(awsconf)
       @options.merge!(Psych.load_file(awsconf))
     end

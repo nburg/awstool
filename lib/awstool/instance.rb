@@ -1,6 +1,6 @@
 require 'erb'
 
-class Awstools::Instance
+class Awstool::Instance
   def initialize(options)
     @options = options
     @compute = Fog::Compute.new(
