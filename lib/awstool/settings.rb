@@ -46,6 +46,10 @@ class Awstool::Settings
         @options['debug'] = true
       end
 
+      opts.on('-s', '--subnet-id-index INDEX', 'Select a subnet-id from you subnet-ids array.') do |index|
+        @options['subnet-id-index'] = index.to_i
+      end
+
       opts.on(
         '-o',
         '--options-file FILE1,FILE2',
@@ -58,14 +62,13 @@ class Awstool::Settings
 
     end.parse!
 
-    [ 'hostname' ].each do |v|
-      if ARGV.empty?
-        puts "#{v} string is required."
-        exit 1
-      else
-        @options[v] = ARGV.shift
-      end
+    if ARGV.empty?
+      puts "hostname string is required."
+      exit 1
+    else
+      @options['hostname'] = ARGV.shift
     end
+
     @options['tags']['Name'] = @options['hostname']
   end
 
@@ -74,6 +77,7 @@ class Awstool::Settings
     if File.exist?(awsconf)
       @options.merge!(Psych.load_file(awsconf))
     end
+    @options['subnet-id-index'] = rand(@options['subnet-ids'].length - 1 )
   end
 
   def self.set_default

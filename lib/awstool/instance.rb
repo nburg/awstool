@@ -5,10 +5,10 @@ class Awstool::Instance
   def initialize(options)
     @options = options
     @compute = Fog::Compute.new(
-      :provider => 'AWS',
-      :region => @options['region'],
-      :aws_access_key_id => @options['access_key_id'],
-      :aws_secret_access_key => @options['access_key'],
+      provider: 'AWS',
+      region: @options['region'],
+      aws_access_key_id: @options['access_key_id'],
+      aws_secret_access_key: @options['access_key'],
     )
   end
 
@@ -17,7 +17,7 @@ class Awstool::Instance
       image_id:  @options['image-id'],
       flavor_id: @options['instance-type'],
       security_group_ids: @options['security-group-ids'],
-      subnet_id: @options['subnet-id'],
+      subnet_id: @options['subnet-ids'][@options['subnet-id-index']],
       key_name: @options['key-name'],
       tags: @options['tags'],
       user_data: ERB.new(File.read(@options['userdata'])).result
@@ -28,9 +28,9 @@ class Awstool::Instance
 
   def set_dns
     dns = Fog::DNS.new(
-      :provider => 'AWS',
-      :aws_access_key_id => @options['access_key_id'],
-      :aws_secret_access_key => @options['access_key'],
+      provider: 'AWS',
+      aws_access_key_id: @options['access_key_id'],
+      aws_secret_access_key: @options['access_key'],
     )
 
     zone = dns.zones.get(@options['dns-zone-id'])
