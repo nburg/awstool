@@ -1,6 +1,8 @@
 key-name: mykey
 image-id: ami-foobar
-subnet-id: subnet-foobar
+subnet-ids: 
+  - subnet-foobar
+  - subnet-foobas
 security-group-ids:
 - sg-foobar
 - sg-foobaz
@@ -11,7 +13,11 @@ region: us-east-1
 instance-type: t2.medium
 facts:
   foo: bar
-csr_attributes: anotherlongstring
-dns_zone:
-  zone-id: FAKEID
-  email: admin@example.com
+puppet_install:
+  package_manager: apt-get
+  repo_package: puppetlabs-release-pc1-trusty.deb
+  csr_attributes: longrandomstring
+  server: puppet.example.com
+  environment: aws
+purge_dns: true
+subnet_balance: true

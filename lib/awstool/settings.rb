@@ -66,10 +66,8 @@ class Awstool::Settings
       puts "hostname string is required."
       exit 1
     else
-      @options['hostname'] = ARGV.shift
+      @options['hostnames'] = ARGV
     end
-
-    @options['tags']['Name'] = @options['hostname']
   end
 
   def self.get_rc
@@ -84,5 +82,6 @@ class Awstool::Settings
     @options['userdata'] = File.expand_path('../userdata/default.erb')
     @options['facts'] = {}
     @options['tags']= {}
+    @options['hostnames'] = []
   end
 end

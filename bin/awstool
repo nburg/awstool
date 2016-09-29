@@ -4,7 +4,15 @@ require 'awstool'
 require 'pp'
 
 options = Awstool::Settings.get_options
+pp options
 
-instance = Awstool::Instance.new(options)
-instance.launch
-instance.set_dns
+options['hostnames'].each do |hostname|
+  if options['subnet_balance']
+    options['subnet-id-index'] = ( options['subnet-id-index'] + 1 ) % ( options['subnet-ids'].length - 1 )
+  end
+  options['tags']['Name'] = hostname
+  options['hostname'] = hostname
+  instance = Awstool::Instance.new(options)
+  instance.launch
+  instance.set_dns
+end
