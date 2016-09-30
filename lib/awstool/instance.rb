@@ -19,6 +19,7 @@ class Awstool::Instance
   end
 
   def launch
+    b = binding
     @instance = @compute.servers.create(
       image_id:  @options['image-id'],
       flavor_id: @options['instance-type'],
@@ -26,7 +27,7 @@ class Awstool::Instance
       subnet_id: @options['subnet-ids'][@options['subnet-id-index']],
       key_name: @options['key-name'],
       tags: @options['tags'],
-      user_data: ERB.new(File.read(@options['userdata'])).result,
+      user_data: ERB.new(File.read(@options['userdata'])).result(b),
       block_device_mapping: [
         {
           'DeviceName' => '/dev/sda1',
