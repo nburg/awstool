@@ -30,6 +30,7 @@ class Awstool::Instance
       block_device_mapping: [
         {
           'DeviceName' => '/dev/sda1',
+          'Ebs.VolumeType' => "gp2",
           'Ebs.VolumeSize' => @options['rootvol_size'],
           'Ebs.DeleteOnTermination' => 'true'
         },
