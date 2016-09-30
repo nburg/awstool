@@ -10,6 +10,12 @@ class Awstool::Instance
       aws_access_key_id: @options['access_key_id'],
       aws_secret_access_key: @options['access_key'],
     )
+    @dns = Fog::DNS.new(
+      provider: 'AWS',
+      aws_access_key_id: @options['access_key_id'],
+      aws_secret_access_key: @options['access_key'],
+    )
+
   end
 
   def launch
@@ -20,20 +26,21 @@ class Awstool::Instance
       subnet_id: @options['subnet-ids'][@options['subnet-id-index']],
       key_name: @options['key-name'],
       tags: @options['tags'],
-      user_data: ERB.new(File.read(@options['userdata'])).result
+      user_data: ERB.new(File.read(@options['userdata'])).result,
+      block_device_mapping: [
+        {
+          'DeviceName' => '/dev/sda1',
+          'Ebs.VolumeSize' => @options['rootvol_size'],
+          'Ebs.DeleteOnTermination' => 'true'
+        },
+      ],
     )
     @instance.wait_for { ready? }
     pp @instance.reload
   end
 
   def set_dns
-    dns = Fog::DNS.new(
-      provider: 'AWS',
-      aws_access_key_id: @options['access_key_id'],
-      aws_secret_access_key: @options['access_key'],
-    )
-
-    zone = dns.zones.get(@options['dns-zone-id'])
+    zone = @dns.zones.get(@options['dns-zone-id'])
 
     if @options['purge_dns']
       record = zone.records.find { |r| r.name == "#{@options['hostname']}." }
@@ -42,7 +49,7 @@ class Awstool::Instance
       end
     end
 
-    @record = zone.records.create(
+    record = zone.records.create(
       value: @instance.private_ip_address,
       name: @options['hostname'],
       type: 'A'

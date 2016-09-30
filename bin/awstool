@@ -4,7 +4,6 @@ require 'awstool'
 require 'pp'
 
 options = Awstool::Settings.get_options
-pp options
 
 options['hostnames'].each do |hostname|
   if options['subnet_balance']

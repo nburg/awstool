@@ -31,14 +31,14 @@ class Awstool::Settings
       opts.on('-f', '--facts FACT1,FACT2', Array, 'Seed new instance with puppet facts') do |facts|
         facts.each do |fact|
           split_fact = fact.split('=')
-          @options['facts'][split_fact[0]] = split_fact[1]
+          @options['facts'][split_fact.first] = split_fact[1]
         end
       end
 
       opts.on('-t', '--tags TAG1,TAG2', Array, 'Set EC2 instance tags') do |tags|
         tags.each do |tag|
           split_tag = tag.split('=')
-          @options['tags'][split_tag[0]] = split_tag[1]
+          @options['tags'][split_tag.first] = split_tag[1]
         end
       end
 
@@ -79,9 +79,10 @@ class Awstool::Settings
   end
 
   def self.set_default
-    @options['userdata'] = File.expand_path('../userdata/default.erb')
+    @options['userdata'] = File.expand_path(File.dirname(__FILE__)) + '/../../userdata/default.erb'
     @options['facts'] = {}
     @options['tags']= {}
     @options['hostnames'] = []
+    @options['rootvol_size'] = 8
   end
 end
