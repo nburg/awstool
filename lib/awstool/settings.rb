@@ -84,5 +84,6 @@ class Awstool::Settings
     @options['tags']= {}
     @options['hostnames'] = []
     @options['rootvol_size'] = 8
+    @options['block_devices'] = []
   end
 end

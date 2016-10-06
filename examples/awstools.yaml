@@ -1,8 +1,8 @@
 key-name: mykey
 image-id: ami-foobar
 subnet-ids: 
-  - subnet-foobar
-  - subnet-foobas
+- subnet-foobar
+- subnet-foobas
 security-group-ids:
 - sg-foobar
 - sg-foobaz
@@ -21,3 +21,9 @@ puppet_install:
   environment: aws
 purge_dns: true
 subnet_balance: true
+rootvol_size: 10
+block_devices:
+  xvdf:
+    mountpoint: /www
+    size: 20
+    filesystem: ext4

@@ -1,8 +1,8 @@
 #cloud-config
 
 bootcmd:
-  - echo <%= @options['hostname'] %> > /etc/hostname
-  - hostname -F /etc/hostname
+- echo <%= @options['hostname'] %> > /etc/hostname
+- hostname -F /etc/hostname
 
 hostname: <%= @options['hostname'] %>
 fqdn: <%= @options['hostname'] %>
@@ -11,35 +11,58 @@ manage_etc_hosts: true
 package_upgrade: true
 package_reboot_if_required: true
 
+disk_setup:
+<% @options['block_devices'].each do |device, opts| %>
+  /dev/<%= device %>:
+    table_type: mbr
+    layout: true
+    overwrite: true
+<% end %>
+
+fs_setup:
+<% @options['block_devices'].each do |device, opts| %>
+- label: None
+  filesystem: <%= opts['filesystem'] %>
+  device: /dev/<%= device %>1
+  partition: auto
+<% end %>
+
+mounts:
+<% @options['block_devices'].each do |device, opts| %>
+- [ /dev/<%= device %>1, <%= opts['mountpoint'] %>, <%= opts['filesystem'] %>, 'defaults,noatime' ]
+<% end %>
+
+mount_default_fields: [ None, None, "ext3", "defaults,noatime", "0","2" ]
+
 write_files:
 <% if @options['puppet_install']['csr_attributes'] %>
-  - content: |
-      ---
-      custom_attributes:
-        1.2.840.113549.1.9.7: <%= @options['puppet_install']['csr_attributes'] %>
-    path: /etc/puppetlabs/puppet/csr_attributes.yaml
-    permissions: 0600
+- content: |
+    ---
+    custom_attributes:
+      1.2.840.113549.1.9.7: <%= @options['puppet_install']['csr_attributes'] %>
+  path: /etc/puppetlabs/puppet/csr_attributes.yaml
+  permissions: 0600
 <% end %>
 <% @options['facts'].each do |fact, value| %>
-  - content: |
-      ---
-      <%= fact %>: <%= value %>
-    path: /opt/puppetlabs/facter/facts.d/<%= fact %>.yaml
-    permissions: '0644'
+- content: |
+    ---
+    <%= fact %>: <%= value %>
+  path: /opt/puppetlabs/facter/facts.d/<%= fact %>.yaml
+  permissions: '0644'
 <% end %>
-      
+
 <% if @options['puppet_install'] %>
 runcmd:
-  <% if @options['puppet_install']['package_manager'] == 'apt-get' %>
-  - wget https://apt.puppetlabs.com/<%= @options['puppet_install']['repo_package'] %>
-  - dpkg -i /<%= @options['puppet_install']['repo_package'] %>
-  - apt-get update
-  - apt-get -y install puppet-agent
-  <% elsif @options['puppet_install']['package_manager'] == 'yum' %>
-  - rpm -ivh https://yum.puppetlabs.com/<%= @options['puppet_install']['repo_package'] %>
-  - yum -y install puppet-agent
-  <% end %>
-  - /opt/puppetlabs/bin/puppet agent -t --waitforcert 5  --server <%= @options['puppet_install']['server'] %> <% if @options['puppet_install']['environment'] %> --environment <%= @options['puppet_install']['environment'] %><% end %>
-  - /opt/puppetlabs/bin/puppet agent -t
+<% if @options['puppet_install']['package_manager'] == 'apt-get' %>
+- wget https://apt.puppetlabs.com/<%= @options['puppet_install']['repo_package'] %>
+- dpkg -i /<%= @options['puppet_install']['repo_package'] %>
+- apt-get update
+- apt-get -y install puppet-agent
+<% elsif @options['puppet_install']['package_manager'] == 'yum' %>
+- rpm -ivh https://yum.puppetlabs.com/<%= @options['puppet_install']['repo_package'] %>
+- yum -y install puppet-agent
+<% end %>
+- /opt/puppetlabs/bin/puppet agent -t --waitforcert 5  --server <%= @options['puppet_install']['server'] %> <% if @options['puppet_install']['environment'] %> --environment <%= @options['puppet_install']['environment'] %><% end %>
+- /opt/puppetlabs/bin/puppet agent -t
 <% else %>
 <% end %>
