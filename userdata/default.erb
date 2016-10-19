@@ -4,6 +4,8 @@ bootcmd:
 - echo <%= @options['hostname'] %> > /etc/hostname
 - hostname -F /etc/hostname
 
+timezone: <%= @options['timezone'] %>
+
 hostname: <%= @options['hostname'] %>
 fqdn: <%= @options['hostname'] %>
 manage_etc_hosts: true
