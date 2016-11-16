@@ -7,7 +7,7 @@ options = Awstool::Settings.get_options
 
 options['hostnames'].each do |hostname|
   if options['subnet_balance']
-    options['subnet-id-index'] = ( options['subnet-id-index'] + 1 ) % ( options['subnet-ids'].length - 1 )
+    options['subnet-id-index'] = ( options['subnet-id-index'] + 1 ) % ( options['subnet-ids'].length )
   end
   options['tags']['Name'] = hostname
   options['hostname'] = hostname
