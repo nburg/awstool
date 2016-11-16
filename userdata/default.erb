@@ -1,9 +1,5 @@
 #cloud-config
 
-bootcmd:
-- echo <%= @options['hostname'] %> > /etc/hostname
-- hostname -F /etc/hostname
-
 timezone: <%= @options['timezone'] %>
 
 hostname: <%= @options['hostname'] %>
@@ -13,10 +9,11 @@ manage_etc_hosts: true
 package_upgrade: true
 package_reboot_if_required: true
 
+<% if  @options['block_devices'] %>
 disk_setup:
 <% @options['block_devices'].each do |device, opts| %>
   /dev/<%= device %>:
-    table_type: mbr
+    table_type: gpt
     layout: true
     overwrite: true
 <% end %>
@@ -31,10 +28,9 @@ fs_setup:
 
 mounts:
 <% @options['block_devices'].each do |device, opts| %>
-- [ /dev/<%= device %>1, <%= opts['mountpoint'] %>, <%= opts['filesystem'] %>, 'defaults,noatime' ]
+- [ /dev/<%= device %>1, <%= opts['mountpoint'] %>, <%= opts['filesystem'] %>, 'defaults,noatime', '0', '2' ]
 <% end %>
-
-mount_default_fields: [ None, None, "ext3", "defaults,noatime", "0","2" ]
+<% end %>
 
 write_files:
 <% if @options['puppet_install']['csr_attributes'] %>

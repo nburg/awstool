@@ -84,7 +84,7 @@ class Awstool::Settings
     @options['tags']= {}
     @options['hostnames'] = []
     @options['rootvol_size'] = 8
-    @options['block_devices'] = []
+    @options['block_devices'] = false
     @options['timezone'] = 'UTC'
   end
 end

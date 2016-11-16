@@ -45,7 +45,8 @@ class Awstool::Instance
     record = zone.records.create(
       value: @instance.private_ip_address,
       name: @options['hostname'],
-      type: 'A'
+      type: 'A',
+      ttl: '300'
     )
   end
 
